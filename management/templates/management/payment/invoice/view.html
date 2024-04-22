@@ -1,0 +1,189 @@
+{% extends 'management/base.html'%}
+{% load static %}
+{% block head %} {{title}} {% endblock %}
+
+{% block content %}
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <a href="{% url 'payment:invoice_report' x.id %}" target="_blank" style="min-width:100px;"
+    class="btn btn-success m-1">PDF</a>
+    <a href="{% url 'payment:invoice_home' %}" style="min-width:100px;" class="btn btn-dark m-1">Back</a>
+    
+</div>
+
+
+
+
+<div class="d-grid gap-2">
+    
+        <div class=" card " >
+            <div class="card-body">
+                       
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <td width="10%">Reference</td>
+                        <td>{{x.ref }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date</td>
+                        <td>{{x.date|date:'d/m/Y'}}</td>
+                    </tr>
+                    <tr>
+                        <td class="vtc">Subject: </td>
+                        <td class="vtl">{{x.subject}}</td>
+                    </tr>
+                </table>
+
+                <hr>
+          
+
+                {% if x.approval %}
+                <p>Prior Approval detail: </p>
+                <table class="table table-sm table-bordered">
+                    <tr>
+                        <td style="width:5%">#</td>
+                        <td style="width:10%;">Inv No</td>
+                        <td style="width:10%;">Date</td>
+                        <td style="width:55%">Particular</td>
+                        <td style="width:10%;">Amount</td>
+                        <td style="width:10%;">Remark</td>
+                        
+                    </tr>
+                   
+                    <tr>
+                        <td>1</td>
+                        <td>{{ x.approval.ref }}</td>
+                        <td>{{ x.approval.date }}</td>
+                        <td>{{ x.approval.subject }}</td>
+                        <td>{{ x.approval.amount }}</td>
+                        <td> Approved </td>
+                        
+                    </tr>
+                   
+                </table>
+                {% endif %}
+
+                <hr>
+
+              
+                {% if xs2 %}
+                <p>Invoice detail: </p>
+                <table class="table table-sm table-bordered">
+                    <tr>
+                        <td style="width:5%">#</td>
+                        <td style="width:10%">Inv No</td>
+                        <td style="width:10%">Date</td>
+                        <td>Particulars</td>
+                        <td style="width:10%">Amount</td>
+                        <td style="width:10%">Remark</td>
+                        {% if view %}
+                        <td style="width:5%">Action</td>
+                        {% endif %}
+                    </tr>
+                    {% for x2 in xs2 %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ x2.number }}</td>
+                        <td>{{ x2.date }}</td>
+                        <td>{{ x2.particular|safe }}</td>
+                        <td>{{ x2.amount }}</td>
+                        <td>
+                            {{ x2.remark }}
+                        </td>
+                   
+                    </tr>
+
+                    {% endfor %}
+
+
+                    {% for x in inv_tbl %}
+                    <tr>
+                        <td></td>
+                        <td colspan="3"> {{x.title }} </td>    
+                        <td> {{x.amount }} </td>    
+                        <td></td>
+                        {% if view %}
+                        <td></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    
+                    <tr>
+                        <td></td>
+                        {% if view %}
+                        <td colspan="6">{{doc.total_txt|title}} </td>
+                        {% else %}
+                        <td colspan="5">{{doc.total_txt|title}} </td>
+                        {% endif %}
+
+                    </tr>
+
+                </table>
+                {% endif %}
+
+                <br>
+   
+
+    <u>Vendor Information:</u>
+    <table class="table table-sm table-bordered">
+        <tr>
+            <td style="width: 10% ;">
+                BIN <br> TIN
+            </td>
+            <td style="width: 20% ;">
+                {{vendor.bin}} <br/> {{vendor.tin}} 
+            </td>
+            <td style="width: 20% ;">
+                A/C Name  <br> A/C Number <br> Bank Name <br> Rounting/ Branch
+            </td>
+            <td>
+                {{vendor.name}} <br>{{vendor.number}} <br> {{vendor.bank}} <br> {{vendor.routing}}/{{vendor.branch}}
+            </td>
+        </tr>
+            
+    </table>
+  
+<br>
+<p>{{x.recommendation|safe}}</p>
+    <br>
+    {% if doc.recomendation %}
+    <p> {{doc.recomendation}} </p>
+    {% endif %}
+
+        {% if rcm_tbl %}
+    <table class="table table-sm table-bordered">
+
+        {% for x in rcm_tbl %}
+        <tr>
+            <td>
+            {% if forloop.counter == 1 %} 
+                #
+            {% else %}
+                {{forloop.counter|add:"-1" }}
+            {% endif %}
+            </td>
+            <td colspan="3"> {{x.title }} </td>    
+            <td> {{x.amount }} </td>    
+            <td></td>
+            {% if view %}
+            <td></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </table>
+        {% endif %}
+
+    {% if doc.adj_title %}
+    <br/>
+    <p>{{doc.adj_title}}</p>
+    {% endif %}
+                
+            </div>
+        </div>
+    
+    
+</div>
+
+
+{% endblock %}

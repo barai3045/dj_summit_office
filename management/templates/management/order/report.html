@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Order {{x.ref}} </title>
+    <style>
+
+        @page {
+            size: a4 portrait;
+ 
+            @frame header_frame {           /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 60pt; width: 512pt; top: 20pt; height: 180pt;
+            }
+            @frame content_frame {          /* Content Frame */
+                left: 60pt; width: 502pt; top: 100pt; height: 712pt;
+            }
+            @frame footer_frame {           /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+            }
+        }
+
+        table, p, u {
+            font-size: 12px;
+        }
+        
+        .w8 {
+            width: 8%;
+        }
+        .w10 {
+            width: 10%;
+        }
+        .w12 {
+            width: 12%;
+        }
+        .ta_tl {
+            text-align: left;
+            vertical-align: top;
+        }
+        .ta_tc {
+            text-align: center;
+            vertical-align: top;
+        }
+        .ta_tr {
+            text-align: right;
+            vertical-align: top;
+        }
+        .table-bordered {
+            border: .1px solid black;
+            padding: 2px;
+            padding-bottom: -1px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="header_content">
+        <img src="http://127.0.0.1:8000/static/images/letterhead2.png" alt="logo" width="850px" >
+    </div>
+
+
+    <table >
+                
+                    <tr>
+                        <td rowspan="5" style="width:35%">
+                           <u> Order To: </u> <br/>
+                            {{x.quotation.contact.vendor.name}} <br/>
+                            {{x.address.address}}<br/>
+                            {{x.address.district}}, {{x.address.country}}
+                        </td>
+                        <td rowspan="3" style="padding: 0, 10px, 0 , 20px;">
+                            <table class="table-bordered">
+                            <tr>
+                            <td>Document No. SF-PUR-13</td>
+                            </tr>
+                            <tr>
+                            <td>Revision No.: 01</td>
+                            </tr>
+                                <tr>
+                                <td>Effective Date: 01 Jan 13</td>
+                                </tr>
+                            </table>
+                         </td>
+                        <td style="width:12%">Reference</td>
+                        <td style="width:25%">{{x.ref}}</td>
+                    </tr>
+                    <tr>
+                        
+                        <td>Date</td>
+                        <td>{{x.date|date:"d/m/Y"}}</td>
+                    </tr>
+                    <tr>
+                        
+                        <td>Your Ref</td>
+                        <td>{{x.quotation.reference}}</td>
+                    </tr>
+                    <tr>
+                        
+                        <td></td>
+                        <td>Your Ref Date</td>
+                        <td>{{x.quotation.date|date:"d/m/Y"}}</td>
+                    </tr>
+                    <tr>
+                        
+                        </tr>
+                    <tr>
+                        <td>
+                            <u> Shipping/Work Address: </u> <br/>
+                            {{x.office.title}} <br/>
+                            {{x.office.address}} <br/>
+                            {{x.office.contact}} <br/>
+                            {{x.office.email}}
+                        </td>
+                        <td></td>
+                        <td class="ta_tl" >Contact</td>
+                        <td class="ta_tl">{{x.quotation.contact.name}}, {{x.quotation.contact.title}} <br/>
+                            {{x.quotation.contact.mobile}}  <br/>
+                            {{x.quotation.contact.email}}
+                        </td>
+                        
+                    </tr>
+
+                
+            </table>
+            
+            				
+            <br>
+            {% if  x.service %}
+            <table class="table-bordered">
+                <tr>
+                    <td style="width: 5%;">#</td>
+                    
+                    <td>
+                        Item Description <br/>
+                        Work Description
+                    </td>
+                    
+
+                    
+                    <td class="ta_tc w8">
+                        Quantity
+                    </td>
+                    <td class="ta_tc w8">
+                        Unit
+                    </td>
+                    <td class="ta_tc w10">
+                        Unit Price
+                    </td>
+                    <td class="ta_tc w12">
+                        Line Amount
+                    </td>
+                </tr>
+                {% for x1 in xs %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+  
+
+                    
+                    <td>{{x1.item.description|safe}} </td>
+                    
+                    
+                    <td class="ta_tc">{{x1.quantity}}</td>
+                    <td class="ta_tc">{{x1.item.unit}}</td>
+                    <td class="ta_tr">{{x1.price1}}</td>
+                    <td class="ta_tr">{{x1.line_total1}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="5">Total Amount including AIT</td>
+                    <td class="ta_tr">{{x.total}}</td>
+                </tr>
+                <tr>
+                    <td colspan="5">VAT({{x.vat_per}} %) Amount</td>
+                    <td class="ta_tr">{{x.vat}}</td>
+                </tr>
+                <tr>
+                    <td colspan="5">Gross Amount</td>
+                    <td class="ta_tr">{{x.gross}}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="ta_tl">In word: {{x.txt_amount}}</td>
+                </tr>
+            </table>
+            {% else %}
+            <table class="table-bordered ">
+                <tr>
+                    <td style="width: 5%;">#</td>
+                    
+                   
+                    
+                    <td class="ta_tl w12">	
+                        Part No <br/>
+                        Item Code
+                    </td>
+                    <td class="ta_tl">
+                        Item Description <br/>
+                        Work Description
+                    </td>
+                    
+                    <td class="ta_tc w8">
+                        Quantity
+                    </td>
+                    <td class="ta_tc w8">
+                        Unit
+                    </td>
+                    <td class="ta_tc w10">
+                        Unit Price
+                    </td>
+                    <td class="ta_tc w12">
+                        Line Amount
+                    </td>
+                    
+                </tr>
+                {% for x1 in xs %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+  
+                    <td>{{x1.item.part_no}} <br/> {{x1.item.rev_part}}</td>
+                    <td>{{x1.item.part_name|safe}} <br/> {{x1.item.description|safe}} </td>
+                    
+                    <td>{{x1.quantity}}</td>
+                    <td>{{x1.item.unit}}</td>
+                    <td>{{x1.price1}}</td>
+                    <td>{{x1.line_total1}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="6">Total Amount including AIT</td>
+                    <td>{{x.total}}</td>
+                </tr>
+                <tr>
+                    <td colspan="6">VAT({{x.vat_per}} %) Amount</td>
+                    <td>{{x.vat}}</td>
+                </tr>
+                <tr>
+                    <td colspan="6">Gross Amount</td>
+                    <td>{{x.gross}}</td>
+                </tr>
+                <tr>
+                    <td colspan="7">In word: {{x.txt_amount}}</td>
+                </tr>
+            </table>
+            {% endif %}
+           <br/>
+            <table class="table table-sm table-borderless">
+                <caption><u> Terms & Conditions: </u></caption>
+                
+                {% for y in x.terms %}
+                <tr>
+                    <td style="width: 5%;">{{ forloop.counter}}</td>
+                    <th style="text-align: left;">{{y.legend}}:</th>
+                    
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>  
+                    {% if y.newtext  %}
+                        {{y.newtext|safe}}
+                        
+                    {% endif  %}
+                    {% if y.text  %}
+                        {{y.text.text|safe }}
+
+                    {% endif  %}
+                    
+                    </td>  
+                      
+                </tr>
+                
+                {% endfor %}
+            </table>
+
+            <br/>
+              <p>
+
+   <img src="http://127.0.0.1:8000/static/images/signature.png" alt="sign iamge" width="60px">
+       
+           
+         <br/>
+            ______________________ <br/>
+                {{x.order_by.name}}  <br/>
+                {{x.order_by_title.title}}  <br/>
+            </p>
+</body>
+</html>

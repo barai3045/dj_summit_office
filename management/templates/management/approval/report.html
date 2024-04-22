@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--   595 × 842 -->
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+
+        @page {
+            size: a4 portrait;
+            @frame header_frame {           /* Static Frame */
+                -pdf-frame-content: header_content_left;
+                left: 50pt; width: 100pt; top: 20pt; height: 80pt;
+            }
+            @frame header_frame {           /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 150pt; width: 295pt; top: 20pt; height: 80pt;
+            }
+            @frame content_frame {          /* Content Frame */
+                left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+            }
+            @frame footer_frame {           /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+            }
+        }
+
+        table, p, u {
+            font-size: 12px;
+        }
+
+        .vtl {
+            text-align: left;
+            vertical-align: top;
+        }
+        .vtc {
+            text-align: center;
+            vertical-align: top;
+        }
+        .vtr {
+            text-align: right;
+            vertical-align: top;
+        }
+
+        .table-bordered {
+            border: .1px solid black;
+            padding: 2px;
+            padding-bottom: -1px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+
+
+
+    </style>
+</head>
+<body>
+<!-- Content for Static Frame 'header_frame' -->
+<div id="header_content_left">
+    <img src="http://127.0.0.1:8000/static/images/logo.png" alt="logo" width="150px">
+</div>
+<!-- Content for Static Frame 'header_frame' -->
+<div id="header_content">
+    <p style="text-align:center; font-size:12px;"> SUMMIT POWER LIMITED <br>
+        {{meta.office|upper}} <br>
+        <u> Office Approval </u></p>
+</div>
+
+<!-- Content for Static Frame 'footer_frame'
+<div id="footer_content">(c) - page <pdf:pagenumber>
+    of <pdf:pagecount>
+</div> -->
+
+<!-- HTML Content -->
+<table class="table">
+    <tr>
+        <td width="10%">Ref</td>
+        <td>{{meta.ref}}</td>
+
+    </tr>
+    <tr>
+        <td>Date</td>
+        <td>{{ x.date|date:"d/m/Y" }}</td>
+
+    </tr>
+    <tr></tr>
+    <tr>
+        <td>Subject</td>
+        <td colspan="3">{{x.subject}}</td>
+    </tr>
+
+</table>
+
+<p>{{ x.description|safe }}</p>
+
+<!-- Title Items -->
+{% if titles %}
+<table class="table table-bordered">
+    <tr>
+        <td style="text-align:center;width:5%;">#</td>
+        <td>Particulars</td>
+        <td style="width:15%">Amount</td>
+    </tr>
+    {% for x1 in titleItems %}
+    <tr>
+        <td style="text-align:center;">{{ forloop.counter }}</td>
+        <td>{{ x1.desc }}</td>
+        <td style="text-align:right;">{{ x1.amount|floatformat:"2g" }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td style="text-align:center;">##</td>
+        <td>Total</td>
+        <td style="text-align:right;">{{sum_amount |floatformat:"2g" }}</td>
+    </tr>
+    <tr>
+        <td>##</td>
+        <td colspan="2">InWord: BDT {{txt_amount}} Only.</td>
+
+    </tr>
+
+</table>
+
+{% endif %}
+<!-- Title Items -->
+
+<!-- Single quotation  -->
+{% if count == 1 %}
+<table class="table table-bordered">
+
+    <tr>
+        <td colspan="6">Vendor: {{ q1.contact.vendor}}</td>
+    </tr>
+    <tr>
+        <td style="width:5%">#</td>
+        <td>Particular</td>
+        <td style="width:10%">Quantity</td>
+        <td style="width:5%">Unit</td>
+        <td style="width:12%">Unit Price</td>
+        <td style="width:15%">Line Amount</td>
+    </tr>
+    {% for i in q1.items %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>
+            {% if i.item.part_no %}
+            {{ i.item.part_no }}
+            {% endif %}
+            {% if i.item.rev_part %}
+            {{ i.item.rev_part }}
+            {% endif %}
+
+            {% if i.item.part_no or i.item.rev_part %}
+            <br>
+            {% endif %}
+            {% if i.item.part_name %}
+            {{ i.item.part_name }}
+            {% endif %}
+            {% if i.item.description %}
+            {{ i.item.description|safe }}
+            {% endif %}
+
+        </td>
+
+        <td style="text-align: center;">{{ i.quantity }}</td>
+        <td>{{ i.item.unit }}</td>
+        <td style="text-align: right;">{{i.price|floatformat:"2g"}}</td>
+        <td style="text-align: right;">{{i.line_amount|floatformat:"2g"}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="5">Total Amount including AIT</td>
+        <td style="text-align: right;">{{q1.total |floatformat:"2g" }}</td>
+    </tr>
+    <tr>
+        <td colspan="5">VAT ({{q1.vat_per |floatformat:"-2g"}}%) Amount</td>
+        <td style="text-align: right;">{{q1.vat|floatformat:"2g" }}</td>
+    </tr>
+    <tr>
+        <td colspan="5">Gross Amount</td>
+        <td style="text-align: right;">{{q1.gross |floatformat:"2g" }}</td>
+    </tr>
+</table>
+{% endif %}
+<!-- End Single quotation  -->
+
+
+<!-- Multiple quotation  -->
+{% if count > 1 %}
+<table class="table table-sm table-bordered">
+    <tr>
+        <td style="width:5%">#</td>
+        <td> Particulars</td>
+        {% for v in vendors %}
+        <td style="text-align: center; width:10%"> {{ v }}</td>
+        {% endfor %}
+    </tr>
+
+    {% for it in items %}
+
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td> {{ it.item.part_no }}
+            {% if it.item.rev_part %}
+            {{ it.item.rev_part }}
+            {% endif %}
+            {% if it.item.rev_part or it.item.part_no %}
+            <br> {% endif %}
+            {% if it.item.part_name %}
+            {{ it.item.part_name }}
+            {% endif %}
+            {% if it.item.description %}
+            {{ it.item.description|safe }}
+            {% endif %}
+        </td>
+        {% for x in it.prices %}
+        <td style="text-align: right;"> {{ x |floatformat:"2g"}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+    <tr>
+
+        {% for x2 in totals %}
+
+        {% if forloop.counter == 1 %}
+
+        <td colspan="2"> {{ x2 }}</td>
+        {% else %}
+        <td style="width: 15%; text-align: right;"> {{ x2 |floatformat:"2g"}}</td>
+        {% endif %}
+
+        {% endfor %}
+    </tr>
+    <tr>
+
+        {% for v in vats %}
+
+        {% if forloop.counter == 1 %}
+
+        <td colspan="2"> {{ v }}</td>
+        {% else %}
+        <td style="width: 15%; text-align: right;"> {{ v |floatformat:"2g"}}</td>
+        {% endif %}
+
+        {% endfor %}
+    </tr>
+    <tr>
+
+        {% for x3 in grosses %}
+
+        {% if forloop.counter == 1 %}
+
+        <td colspan="2"> {{ x3 }}</td>
+        {% else %}
+        <td style="width: 15%; text-align: right;"> {{ x3 |floatformat:"2g"}}</td>
+        {% endif %}
+
+        {% endfor %}
+    </tr>
+
+</table>
+{% endif %}
+
+<!-- Multiple quotation  -->
+
+{% if x.conclusion %}
+<p>{{ x.conclusion|safe }}</p>
+{% endif %}
+
+{% if p_advance or p_amount or p_security %}
+<br/>
+<table class="table table-bordered">
+
+    <u> Payment Details: </u>
+    <tr>
+        <td style="width:5%;">SL</td>
+        <td style="text-align:center; width:15%;">Amount</td>
+        <td>Pay To</td>
+        <td>Remarks</td>
+    </tr>
+
+    {% if p_advance %}
+    <tr>
+        {% for x1 in p_advance %}
+        <td>{{x1}}</td>
+        {% endfor %}
+    </tr>
+    {% endif %}
+
+    {% if p_amount %}
+    <tr>
+        {% for x1 in p_amount %}
+        {% if forloop.counter == 2 %}
+        <td style="text-align:center">{{x1| floatformat:"2g"}}</td>
+        {% else %}
+        <td>{{ x1 }}</td>
+        {% endif %}
+        {% endfor %}
+    </tr>
+    {% endif %}
+
+    {% if p_security %}
+    <tr>
+        {% for x2 in p_security %}
+        {% if forloop.counter == 2 %}
+        <td style="text-align:center">{{x2| floatformat:"2g"}}</td>
+        {% else %}
+        <td>{{x2}}</td>
+        {% endif %}
+        {% endfor %}
+    </tr>
+    {% endif %}
+</table>
+<br>
+{% endif %}
+
+
+{% if salutation %}
+<p>{{salutation}}</p>
+{% endif %}
+
+
+<p>  
+   {% if x.signed %} 
+   <img src="http://127.0.0.1:8000/static/images/signature.png" alt="sign iamge" width="60px">
+          {% else %}
+          <br/><br/>
+          {% endif %}
+          <br/>
+    _____________________________
+    <br/> {{ x.raise_by.name }} <br/> {{meta.title.title}} </p>
+
+    <p><u> {{ meta.title2.title }} </u> </p>
+</body>
+</html>

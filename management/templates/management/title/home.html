@@ -1,0 +1,55 @@
+{% extends 'management/base.html'%}
+
+{% block head %} {{title}} {% endblock %}
+
+{% block content %}
+
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-center row">
+    <div class="card ">
+        <div class="card-body">
+            <table class="table table-striped table-sm">
+                <thead>
+               <tr>
+                <td>#</td>
+                
+                <td>Title</td>
+
+               </tr> </thead>
+                {% for x in xs %}
+                <tr>
+                    <td> <a href="{% url 'approval:title_view' x.id %}">{{x.id}}</a> </td>
+                    <td>{{x.title}}</td>
+                    <td>{{x.approval}}</td>
+
+                   
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+       
+            <hr>
+            <div class="pagination justify-content-md-center">
+                <span class="step-links">
+                    {% if xs.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ xs.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ xs.number }} of {{ xs.paginator.num_pages }}.
+                    </span>
+            
+                    {% if xs.has_next %}
+                        <a href="?page={{ xs.next_page_number }}">next</a>
+                        <a href="?page={{ xs.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Note PDF</title>
+    <style>
+        @page {
+            size: a4 portrait;
+
+            @frame header_frame {
+                /* Static Frame */
+                -pdf-frame-content: header_left_content;
+                left: 50pt;
+                width: 100pt;
+                top: 20pt;
+                height: 60pt;
+            }
+            
+            @frame header_frame {
+                /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 150pt;
+                width: 312pt;
+                top: 20pt;
+                height: 60pt;
+            }
+
+
+            @frame content_frame {
+                /* Content Frame */
+                left: 50pt;
+                width: 512pt;
+                top: 90pt;
+                height: 782pt;
+            }
+
+            @frame footer_frame {
+                /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 50pt;
+                width: 512pt;
+                top: 812pt;
+                height: 15pt;
+            }
+
+        }
+
+        .vtl {
+            vertical-align: top;
+            text-align: left;
+        }
+
+        .vtc {
+            vertical-align: top;
+            text-align: center;
+        }
+
+        .vtr {
+            vertical-align: top;
+            text-align: right;
+        }
+
+        .header {
+            font-size: 12px;
+
+        }
+
+        p,
+        u {
+            font-size: 13px;
+        }
+
+        table,
+        td,
+        th {
+            border: .1px solid black;
+            font-size: 12px;
+
+        }
+
+        td,
+        th {
+            padding: 2px;
+            padding-bottom: -1px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table.no_border,
+        .no_border td,
+        .no_border tr,
+        #no_border1 td {
+            border: 0;
+            padding: 0px;
+            font-size: 13px;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    
+    <div id="header_left_content">
+        <img src="http://127.0.0.1:8000/static/images/logo.png" alt="logo" width="180px">
+    </div>
+    
+    <div id="header_content">
+
+        <p align="center" class="header">SUMMIT POWER LIMITED <br> {{x.plant.title|upper}} </p>
+        <p class="vtc"> <u>Approval for Bill Payment</u></p>
+
+    </div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">
+        <i> page
+            <pdf:pagenumber />
+            of
+            <pdf:pagecount />
+        </i>
+    </div>
+
+
+    <!-- HTML Content -->
+    <table class="no_border">
+        <tr>
+            <td width="10%">Reference</td>
+            <td>{{x.ref}}</td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>{{x.date|date:'d/m/Y'}}</td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+            <td class="vtl">Subject: </td>
+            <td class="vtl">{{x.subject}}</td>
+        </tr>
+
+    </table>
+
+    {% if x.description %}
+    <p>{{x.description|safe}}</p>
+    {% endif %}
+
+    <table class="table">
+        <tr>
+            <td class="vtc" width="5%">#</td>
+            <td>Particular</td>
+            <td class="vtc" width="10%">Qty</td>
+            <td class="vtc" width="10%">Unit</td>
+            <td class="vtc" width="13%">Unit Cost</td>
+            <td class="vtc" width="15%">Amount</td>
+        </tr>
+
+        {% for x in x.items %}
+        <tr >
+            <td class="vtc">{{ forloop.counter }}</td>
+            <td>{{ x.item.part_name }} {{x.desc}} </td>
+            <td align="center">{{ x.quantity | floatformat:"-1g" }}</td>
+            <td>{{ x.item.unit }}</td>
+            <td align="right">{{ x.price | floatformat:"2g" }}</td>
+            <td align="right">{{ x.amount | floatformat:"2g" }}</td>
+
+        </tr>
+        {% endfor %}
+        {% if x.ait_amount > 0 or x.vat_amount > 0 %}
+        <tr>
+            <td colspan="5">Total Amount</td>
+            <td align="right">{{x.sum_amount | floatformat:"2g" }}</td>
+        </tr>
+        {% endif %}
+        {% if x.ait_amount > 0 %}
+        <tr>
+            <td colspan="5">AIT ({{x.ait|floatformat:"2g" }}%) Included </td>
+            <td align="right">{{x.ait_amount | floatformat:"2g" }}</td>
+        </tr>
+        {% endif %}
+        {% if x.vat_amount > 0 %}
+        <tr>
+            <td colspan="5">VAT ({{ x.vat|floatformat:"2g" }}%)</td>
+            <td align="right">{{x.vat_amount |floatformat:"2g" }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td colspan="5">Gross Amount</td>
+            <td align="right">{{x.gross_amount |floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td colspan="6" align="left">In Word: BDT {{ x.gross_amount_txt|title }} only.</td>
+        </tr>
+
+    </table>
+
+
+    {% if x.clen > 8 %}
+   
+    {{x.conclusion|safe}}
+
+    {% else %}
+<br>
+    {% endif %}
+
+
+
+    <table class="table">
+            <u> Vendor Information: </u>
+            <tr>
+                <td style="width: 10% ;" class="vtl">
+                    BIN <br> TIN
+                </td>
+                <td style="width: 30% ;" class="vtl">
+                    {{x.vendor.bin}} <br>{{x.vendor.tin}}
+                </td>
+                <td style="width: 20% ;">
+                    A/C Name <br> A/C Number <br> Bank Name <br> Rounting/ Branch
+                </td>
+                <td>
+                    {{x.account.name}} <br>{{x.account.number}} <br> {{x.account.bank}} <br>
+                    {{x.account.routing}}/{{x.account.branch}}
+                </td>
+            </tr>
+
+        </table>
+
+    <p> <br> Submitter for your kind approval for payment of amount BDT {{x.gross_amount |floatformat:"2g" }} (BDT
+        {{x.gross_amount_txt|title }} only) for above stated purpose</p>
+        {% if x.signed %}
+            <img src="http://127.0.0.1:8000/static/images/signature.png" alt="sign iamge" width="70px">
+            {% endif %}
+            <br><br>
+            <p>
+    _______________________ <br>
+        {{x.raise_by.name}} <br> 
+        {{x.raise_by.title.title}} </p>
+    
+        <p><u>{{x.submitted_to.title.title}}</u></p>
+
+
+
+   
+
+
+</body>
+
+</html>

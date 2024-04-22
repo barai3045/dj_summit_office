@@ -1,0 +1,224 @@
+{% extends 'management/base.html'%}
+
+{% block head %} {{title}} {% endblock %}
+
+{% block content %}
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+
+    <a href="{% url 'approval:approval_report' x.id %}" target="_blank" style="min-width:100px;" class="btn btn-info m-1">Report</a>
+    <a href="{% url 'approval:approval_home' %}" style="min-width:100px;" class="btn btn-dark m-1">Back</a>
+    
+</div>
+<div class="d-grid gap-2 ">
+    <div class="card ">
+        <div class="card-body">
+            
+                   
+                  
+                    <p> Date: {{x.date|date:"d/m/Y"}}  <br/>
+                        Ref: {{meta.ref }}</p>
+                    
+                    <p >Subject: {{x.subject}}</p>
+               
+                    <p >{{x.description|safe}}</p>
+                    
+                     <!-- Title Items -->
+            {% if titles %}
+            <table class="table table-sm">
+                    <tr>
+                        <td>#</td>
+                        <td>Particulars</td>
+                        <td>Amount</td>
+                    </tr>
+                {% for x in titleItems %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ x.item.item }} {{ x.desc }}</td>
+                        <td>{{ x.amount|floatformat:"2g" }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>##</td>
+                    <td>Total </td>
+                    <td>{{sum_amount |floatformat:"2g" }}</td>
+                </tr>
+                <tr>
+                    <td>##</td>
+                    <td colspan="2">InWord: BDT {{txt_amount}} Only.</td>
+
+                </tr>
+
+
+            </table>
+            {% endif %}
+            <!-- Title Items -->   
+
+
+                    <!-- Start Single Quotation -->
+                    {% if count == 1 %}
+                        <table class="table table-sm">
+                            <tr>
+                                <td>#</td>
+                                <td>Particular</td>
+                                <td>Quantity</td>
+                                <td>Unit</td>
+                                <td>Unit Price</td>
+                                <td>Line Amount</td>
+                            </tr>
+                            {% for i in q1.items %}
+                            <tr>
+                                <td>{{ i.id }}</td>
+                                <td>{{ i.item.part_no}}</td>
+                                <td style="text-align: right;">{{ i.quantity }}</td>
+                                <td style="text-align: center;">{{ i.item.unit }}</td>
+                                <td style="text-align: right;">{{ i.price }}</td>
+                                <td style="text-align: right;">{{ i.line_amount }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="5">Total Amount including AIT</td>
+                                <td style="text-align: right;">{{q1.total|floatformat:"2g"}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">VAT ({{q1.vat_per |floatformat:"-2g"}}%) Amount </td>
+                                <td style="text-align: right;">{{q1.vat|floatformat:"2g" }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">Gross Amount </td>
+                                <td style="text-align: right;">{{q1.gross |floatformat:"2g" }}</td>
+                            </tr>
+                        </table>
+
+                    {% endif %}
+                    <!-- End Single Quotation -->
+
+                     <!-- Multiple quotation  -->
+            {% if count > 1 %}
+            <table class="table table-sm table-bordered">
+                <tr>
+                    <td>#</td>
+                    <td> Particulars </td>
+                    {% for v in vendors %}
+                    <td  style="text-align: center;"> {{ v }}</td>
+                    {% endfor %}
+                </tr>
+
+                {% for it in items %}
+
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td> {{ it.item.part_no }}
+                        {% if it.item.rev_part %}
+                        {{ it.item.rev_part }}
+                        {% endif %}
+                        {% if it.item.rev_part or it.item.part_no %}
+                        <br> {% endif %}
+                        {% if it.item.part_name %}
+                        {{ it.item.part_name }}
+                        {% endif %}
+                        {% if it.item.description %}
+                        {{ it.item.description|safe }}
+                        {% endif %}
+                    </td>
+                    {% for x in it.prices %}
+                    <td style="text-align: right;"> {{ x |floatformat:"2g"}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+
+                <tr>
+                    
+                    {% for x in totals %}
+                        
+                   {% if forloop.counter == 1 %}
+                  
+                    <td colspan="2"> {{ x }}</td>
+                    {% else %}
+                    <td style="width: 15%; text-align: right;"> {{ x |floatformat:"2g"}}</td>
+                    {% endif %}
+                   
+                    {% endfor %}
+                </tr>
+                <tr>
+                    
+                    {% for v in vats %}
+                        
+                   {% if forloop.counter == 1 %}
+                  
+                    <td colspan="2"> {{ v }}</td>
+                    {% else %}
+                    <td style="width: 15%; text-align: right;"> {{ v |floatformat:"2g"}}</td>
+                    {% endif %}
+                   
+                    {% endfor %}
+                </tr>
+                <tr>
+                    
+                    {% for x in grosses %}
+                        
+                   {% if forloop.counter == 1 %}
+                  
+                    <td colspan="2"> {{ x }}</td>
+                    {% else %}
+                    <td style="width: 15%; text-align: right;"> {{ x |floatformat:"2g"}}</td>
+                    {% endif %}
+                   
+                    {% endfor %}
+                </tr>
+
+            </table>
+            {% endif %}
+
+            <!-- Multiple quotation  -->
+            <p>{{ x.conclusion|safe }}</p>
+
+            {% if count > 0 %}
+            <table class="table table-sm table-bordered">
+                <p><u> Payment Details: </u> </p>
+                <tr>
+                    <td>SL</td>
+                    <td style="text-align:center">Amount</td>
+                    <td>Pay To </td>
+                    <td>Remarks </td>
+                </tr>
+                <tr>
+                        {% for x in p_advance %}
+                        <td>{{x}}</td>
+                        {% endfor %}
+                </tr>
+                <tr>
+                        {% for x in p_amount %}
+                        {% if forloop.counter == 2 %}
+                       <td style="text-align:center">{{x| floatformat:"2g"}}</td>
+                        {% else  %}
+                        <td>{{x}}</td>
+                        {% endif %}
+                        {% endfor %}
+                </tr>
+                <tr>
+                        {% for x in p_security %}
+                       {% if forloop.counter == 2 %}
+                        <td style="text-align:center">{{x| floatformat:"2g"}}</td>
+                        {% else  %}
+                        <td>{{x}}</td>
+                        {% endif %}
+                        {% endfor %}
+                </tr>
+            </table>
+             {% endif %}
+            {% if salutation %}
+            <br>
+            <p>{{salutation}}</p>
+            {% endif %}
+           
+            <p> <br/><br/><br/> _____________________________
+                <br/> {{ x.raise_by.name }} <br/> {{meta.title.title}} </p>
+            
+                <p><u> {{ meta.title2.title }} </u> </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

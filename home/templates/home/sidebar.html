@@ -1,0 +1,113 @@
+{% extends 'home/base.html'%}
+{% block title %} 2 {% endblock %}
+{% block content %}
+<br>
+<div class=" d-flex justify-content-center">
+    <h1>Welcome to Ashulia Power Plant</h1>
+</div>
+<br>
+<div class="container d-flex justify-content-conter" style="min-height: 200px;">
+    <div class="card justify-content-conter" style="min-width: 827; ">
+        <div class="card-body justify-content-conter">
+            {% for x in xs %}
+            <h1>{{x.title}}</h1>
+            <h5>Date: {{ x.date }}</h5>
+            <h3>{{ x.description }}</h3>
+            {% endfor %}
+        </div>
+    </div>
+ 
+</div>
+<div class="d-flex justify-content-center pb-5">
+
+
+<div class="row  row-cols-4 justify-content-center" style="max-width: 827px;">
+    <div class="col">
+        <div class="card bg-white" >
+            <div class="card-header">
+                <h3>Featured</h3>
+              </div>
+            <div class="card-body" style="min-height: 150px;">
+                <h5 class="card-title">Special title treatment</h5>
+                {{ hello }}
+            </div>
+            <div class="card-footer text-muted">
+              <a href="" class="d-flex btn btn-info justify-content-center" style="min-width: 100px ;"> Go</a>
+              </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card" >
+            <div class="card-header">
+                <h3>HR</h3>
+              </div>
+            <div class="card-body" style="min-height: 150px;">
+                
+                <h5>Human Resource management details here.</h5>
+            </div>
+            <div class="card-footer text-muted">
+              <a href="" class="d-flex btn btn-info justify-content-center" style="min-width: 100px ;"> Go</a>
+              </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card" >
+            <div class="card-header">
+                <h3>Bill</h3>
+              </div>
+            <div class="card-body" style="min-height: 150px;">
+                <h5 class="card-title">All types of Billing is here</h5>
+                
+            </div>
+            <div class="card-footer text-muted">
+              <a href="" class="d-flex btn btn-info justify-content-center" style="min-width: 100px ;"> Go</a>
+              </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card" >
+            <div class="card-header">
+                <h3>Inventory</h3>
+              </div>
+            <div class="card-body" style="min-height: 150px;">
+                <h5 class="card-title">All types of Inventory Here</h5>
+                
+            </div>
+            <div class="card-footer text-muted">
+              <a href="" class="d-flex btn btn-info justify-content-center" style="min-width: 100px ;"> Go</a>
+              </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card" >
+            <div class="card-header">
+                <h3>O&M</h3>
+              </div>
+            <div class="card-body" style="min-height: 150px;">
+                <h5 class="card-title">Operation & Maintenance</h5>
+                
+            </div>
+            <div class="card-footer text-muted">
+              <a href="" class="d-flex btn btn-info justify-content-center" style="min-width: 100px ;"> Go</a>
+              </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card" >
+            <div class="card-header">
+                <h3>Featured</h3>
+              </div>
+            <div class="card-body" style="min-height: 150px;">
+                <h5 class="card-title">Special title treatment</h5>
+                {{ hello }}
+            </div>
+            <div class="card-footer text-muted">
+              <a href="" class="d-flex btn btn-info justify-content-center" style="min-width: 100px ;"> Go</a>
+              </div>
+        </div>
+    </div>
+    
+</div>
+
+</div>
+{% endblock %}

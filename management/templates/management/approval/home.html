@@ -1,0 +1,67 @@
+{% extends 'management/base.html'%}
+
+{% block head %} {{title}} {% endblock %}
+
+{% block content %}
+
+
+<div class="d-grid gap-2 ">
+    <div class="card ">
+        <div class="card-body">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="12%">Ref no</th>
+                        <th width="12%">Date</th>
+                        <th>Approval</th>
+                        <th width="12%">Amount</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in xs %}
+                    <tr>
+                        <td>{{ x.id }}</td>
+                        <td><a href="{% url 'approval:approval_view' x.id %}">{{ x.ref }}</a> </td>
+                        <td>{{ x.date|date:"d/m/Y"}}</td>
+                        <td>{{ x.subject }}</td>
+                        <td style="text-align: end;">{{ x.amount| floatformat:"2g" }}</td>
+                        
+                    </tr>
+                    <tr>
+                        
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+            <hr>
+            <div class="pagination justify-content-md-center">
+                <span class="step-links">
+                    {% if xs.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ xs.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ xs.number }} of {{ xs.paginator.num_pages }}.
+                    </span>
+
+                    {% if xs.has_next %}
+                    <a href="?page={{ xs.next_page_number }}">next</a>
+                    <a href="?page={{ xs.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static tailwind_tags %}
+<head>
+    {% tailwind_css %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Power Limtied</title>
+</head>
+<body class="bg-gray-200">
+    {% block content %}
+    <h1 class="w-35 bg-gray-200">New Base File </h1>
+    {% endblock %}
+
+    {% block script %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% extends 'hr/base.html'%}
+{% load static %}
+{% block head %} {{title}} {% endblock %}
+
+{% block content %}
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+
+    <a href="{% url 'employee:employee_home' %}" style="min-width:100px;" class="btn btn-dark m-1">Back</a>
+    
+</div>
+
+<div class="d-grid gap-2 ">
+    <div class="card" >
+        <div class="card-body">
+
+            <table class="table table-borderless table-sm">
+
+                <tr>
+                    <td>Employee Id</td>
+                    <td>{{x.id}} </td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>{{x.name}}</td>
+                </tr>
+                <tr>
+                    <td>Birth Date</td>
+                    <td>{{x.birth_date|date:"d/m/Y"}}</td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>{{x.gender}}</td>
+                </tr>
+                <tr>
+                    <td>Blood Group</td>
+                    <td>{{x.blood}}</td>
+                </tr>
+                <tr>
+                    <td>Hire Date</td>
+                    <td>{{x.hire_date|date:"d/m/Y"}}</td>
+                </tr>
+                <tr>
+                    <td>Hire Title</td>
+                    <td>{{x.hire_title.title}}</td>
+                </tr>
+                <tr>
+                    <td>Hire Office</td>
+                    <td>{{x.hire_office}}</td>
+                </tr>
+                <tr>
+                    <td>Present Title</td>
+                    <td>{{x.present_title.title}}</td>
+                </tr>
+                <tr>
+                    <td>Present Office</td>
+                    <td>{{x.present_office}}</td>
+                </tr>
+
+            </table>
+            
+            <hr>
+            <p>Title History</p>
+            <table class="table table-striped table-sm">
+                <tr>
+                    <td style="width: 10%;">1</td>
+                    <td style="width: 30%;"> {{ x.hire_date|date:"d/m/Y"}} </td>
+                    <td> {{ x.hire_title.title }} </td>
+                </tr>
+                {% for x1 in x.titles %}
+                <tr>
+                    <td> {{forloop.counter|add:1}} </td>
+                    <td> {{x1.date|date:'d/m/Y'}} </td>
+                    <td>{{x1.title.title}}</td>
+                    
+                </tr>
+                {% endfor %}
+              
+            </table>
+
+            <hr>
+            <p>Office History</p>
+            <table class="table table-striped table-sm">
+                <tr>
+                    <td style="width: 10%;">1</td>
+                    <td style="width: 30%;"> {{ x.hire_date|date:"d/m/Y"}} </td>
+                    <td> {{ x.hire_office }} </td>
+                </tr>
+                {% for x1 in x.offices %}
+                <tr>
+                    <td> {{forloop.counter|add:1}} </td>
+                    <td> {{x1.date|date:'d/m/Y'}} </td>
+                    <td>{{x1.office}}</td>
+                    
+                </tr>
+                {% endfor %}
+                
+            </table>
+    
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock%}

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Note PDF</title>
+    <style>
+        @page {
+            size: a4 portrait;
+
+
+
+            @frame header_frame {
+                /* Static Frame */
+                -pdf-frame-content: header_left_content;
+                left: 50pt;
+                width: 100pt;
+                top: 20pt;
+                height: 60pt;
+            }
+
+            @frame header_frame {
+                /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 150pt;
+                width: 312pt;
+                top: 20pt;
+                height: 60pt;
+            }
+
+
+            @frame content_frame { /* Content Frame */
+                left: 50pt; width: 512pt; top: 80pt; height: 800pt;
+            }
+
+            @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 822pt; height: 20pt;
+        }
+
+        }
+
+        .vtl {
+            vertical-align: top;
+            text-align: left;
+        }
+
+        .vtc {
+            vertical-align: top;
+            text-align: center;
+        }
+
+        .vtr {
+            vertical-align: top;
+            text-align: right;
+        }
+
+        .header {
+            font-size: 12px;
+
+        }
+
+        p,
+        caption {
+            font-size: 13px;
+        }
+
+        caption {
+            text-decoration: underline;
+        }
+
+        p {
+            padding-bottom: -5px;
+
+        }
+
+        td,
+        th {
+            border: .1px solid black;
+            font-size: 12px;
+
+        }
+
+        td,
+        th {
+            padding: 2px;
+            padding-bottom: -1px;
+        }
+
+        table {
+            padding-top: 0px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table.no_border,
+        .no_border td,
+        .no_border tr,
+        #no_border1 td {
+            border: 0;
+            padding: 0px;
+            font-size: 13px;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+
+    <div id="header_left_content">
+        <img src="http://127.0.0.1:8000/static/images/logo.png" alt="logo" width="180px">
+    </div>
+
+    <div id="header_content">
+
+        <p align="center" class="header">  {{meta.office|upper}} <br> {{meta.plant|upper}} </p>
+        <p class="vtc"> <u>{{meta.doc_title}}</u></p>
+
+    </div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">
+       
+        <i> page
+            <pdf:pagenumber />
+            of
+            <pdf:pagecount />
+        </i>
+    </div>
+
+
+    <!-- HTML Content -->
+   
+    <div>
+        <table class="no_border">
+            <tr>
+                <td>Date: </td>
+                <td>{{x.date|date:'d/m/Y'}}</td>
+            </tr>
+            <tr>
+                <td width="10%">Reference:</td>
+                <td>{{ meta.ref}}</td>
+            </tr>
+
+            <tr>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td class="vtl">Subject: </td>
+                <td class="vtl">{{x.subject}}</td>
+            </tr>
+
+        </table>
+        {% if x.approval %}
+                
+            <table class="table table-sm table-bordered">
+                <caption>Prior Approval detail:</caption>
+                <tr>
+                    <td style="width:4%">#</td>
+                    <td style="width:12%">Approval No</td>
+                    <td style="width:12%">Date</td>
+                    <td >Particular</td>
+                    <td style="width:12%">Amount</td>
+                    <td style="width:13%">Remark</td>
+                </tr>
+                   
+                <tr>
+                    <td>{{ 1 }}</td>
+                    <td class="vtl">{{ x.approval.ref }}</td>
+                    <td class="vtc">{{ x.approval.date|date:"d/m/Y" }}</td>
+                    <td class="vtl">{{ x.approval.subject }}</td>
+                    <td class="vtr">{{ x.approval.amount }}</td>
+                    <td class="vtl"> Approved </td>
+                </tr>
+                   
+            </table>
+        {% endif %}
+
+
+        {% if xs2 %}
+        <br>
+
+        <table class="table">
+            <caption>Invoice detail:</caption>
+            <tr>
+                <td style="width:4%">#</td>
+                <td style="width:12%">Inv No</td>
+                <td style="width:12%">Date</td>
+                <td>Particular</td>
+                <td style="width:12%">Amount</td>
+                <td style="width:13%">Remark</td>
+
+            </tr>
+            {% for x2 in xs2 %}
+            <tr>
+                <td class="vtc">{{ forloop.counter }}</td>
+                <td class="vtc">{{ x2.number }}</td>
+                <td class="vtc">{{ x2.date|date:"d/m/Y" }}</td>
+                <td class="vtl">{{ x2.particular|safe }}</td>
+                <td class="vtr">{{ x2.amount |floatformat:"2g"}}</td>
+                <td class="vtl">{% if x2.remark %} {{ x2.remark }}
+                    {% else %} Recomended for Payment {% endif %} </td>
+            </tr>
+
+            {% endfor %}
+            {% for x in inv_tbl %}
+            <tr>
+                <td>{{x.col1}}</td>
+                <td colspan="3"> {{x.title }} </td>    
+                <td class="vtr"> {{x.amount }} </td>    
+                <td>{{x.col4}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="6">{{doc.total_txt|title}} </td>
+            </tr>   
+
+        </table>
+        {% endif %}
+
+
+    <br/>
+    <table class="table table-sm table-bordered">
+        <caption>Vendor Information:</caption>
+        <tr>
+            <td style="width: 10% ;">
+                BIN <br> TIN
+            </td>
+            <td style="width: 20% ;">
+                {{vendor.bin}} <br/> {{vendor.tin}} 
+            </td>
+            <td style="width: 20% ;">
+                A/C Name  <br> A/C Number <br> Bank Name <br> Rounting/ Branch
+            </td>
+            <td>
+                {{vendor.name}} <br>{{vendor.number}} <br> {{vendor.bank}} <br> {{vendor.routing}}/{{vendor.branch}}
+            </td>
+        </tr>
+            
+    </table>
+  
+<br>
+<p>{{x.recommendation|safe}}</p>
+    
+    {% if doc.recomendation %}
+    <p> {{doc.recomendation}} </p>
+    {% endif %}
+
+        {% if rcm_tbl %}
+    <table class="table table-sm table-bordered">
+
+        {% for x in rcm_tbl %}
+        <tr>
+            <td>
+            {% if forloop.counter == 1 %} 
+                #
+            {% else %}
+                {{forloop.counter|add:"-1" }}
+            {% endif %}
+            </td>
+            <td colspan="3"> {{x.title }} </td>    
+            <td> {{x.amount }} </td>    
+            <td></td>
+            {% if view %}
+            <td></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        </table>
+        {% endif %}
+
+    {% if doc.adj_title %}
+    <br/>
+    <p>{{doc.adj_title}}</p>
+    {% endif %}
+
+ 
+
+            {% if  x.signed %}
+          
+            <img src="http://127.0.0.1:8000/static/images/signature.png" alt="sign.jpg" height="50px" width="70px">
+            {% else %}
+                <br/>
+            {% endif %}
+            <p>
+            _______________________ <br>
+            {{meta.raised_by_name}} <br> 
+            {{meta.raised_by_title}} <br> 
+            </p>
+            
+            <p><u>{{meta.submitted_to_title}}</u></p>
+
+    </div>
+</body>
+
+</html>

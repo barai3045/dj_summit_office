@@ -1,0 +1,38 @@
+{% extends 'hr/base.html'%}
+{% load static %}
+{% block head %} {{title}} {% endblock %}
+
+{% block content %}
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+
+    <a href="{% url 'employee:title_home' %}" style="min-width:100px;" class="btn btn-dark m-1">Back</a>
+    
+</div>
+
+<div class="d-grid gap-2 ">
+    <div class="card" >
+        <div class="card-body">
+
+            <table class="table table-borderless table-sm">
+
+                <tr>
+                    <td>Title Id</td>
+                    <td>{{x.id}} </td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td>{{x.title}}</td>
+                </tr>
+                <tr>
+                    <td>Short Title</td>
+                    <td>{{x.stitle}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock%}

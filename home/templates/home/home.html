@@ -1,0 +1,28 @@
+{% extends 'home/base2.html'%}
+{% block title %} 2 {% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-36">
+    <h1 class="text-6xl bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">Welcome to Summit Power Limited</h1>
+</div>
+
+<div class="flex justify-center space-x-2">
+
+
+
+<div class="w-60 bg-amber-100 shadow-lg p-1 rounded-lg">
+    <div class="bg-gray-700 px-2 py-4 rounded-t-lg text-center">
+        <p class="text-xl text-white font-bold">Managemet Process</p>
+    </div>
+    <div class="h-44 bg-gray-100 ">
+        <p class="p-3 font-semibold">Approval, Purchase Order, Invoice Details here here.</p>
+    </div>
+    <div class="bg-gradient-to-r from-green-500 to-blue-700 p-2 text-center rounded-b-lg">
+        <a class="w-full text-xl text-white" href="{% url 'approval:approval_home' %}" >Details</a>
+    </div>
+</div>
+
+</div>
+
+
+{% endblock %}
